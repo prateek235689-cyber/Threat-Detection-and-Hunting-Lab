@@ -15,14 +15,19 @@ detection:
   selection_image:
     Image|endswith: '\powershell.exe'
 
-  selection_flags:
-    CommandLine|contains:
-      - '-NoProfile'
-      - '-NonInteractive'
-      - '-WindowStyle Hidden'
-      - '-EncodedCommand'
+  flag_noprofile:
+    CommandLine|contains: '-NoProfile'
 
-  condition: selection_image and 2 of selection_flags
+  flag_noninteractive:
+    CommandLine|contains: '-NonInteractive'
+
+  flag_hidden:
+    CommandLine|contains: '-WindowStyle Hidden'
+
+  flag_encoded:
+    CommandLine|contains: '-EncodedCommand'
+
+  condition: selection_image and ((flag_noprofile and flag_noninteractive) or (flag_noprofile and flag_hidden) or (flag_noprofile and flag_encoded) or (flag_noninteractive and flag_hidden) or (flag_noninteractive and flag_encoded) or (flag_hidden and flag_encoded))
 
 falsepositives:
   - Administrative PowerShell scripts
