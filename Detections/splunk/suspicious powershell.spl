@@ -1,0 +1,14 @@
+index=main sourcetype="XmlWinEventLog:Microsoft-Windows-Sysmon/Operational" EventID=1
+| rex field=_raw "<Data Name='Image'>(?<ProcessImage>[^<]+)"
+| rex field=_raw "<Data Name='CommandLine'>(?<CommandLine>[^<]*)"
+| rex field=_raw "<Data Name='ParentImage'>(?<ParentImage>[^<]*)"
+| rex field=_raw "<Data Name='User'>(?<User>[^<]*)"
+| where like(lower(ProcessImage), "%\\powershell.exe")
+| eval SuspiciousFlags=0
+| eval SuspiciousFlags=SuspiciousFlags+if(like(lower(CommandLine), "%-noprofile%"),1,0)
+| eval SuspiciousFlags=SuspiciousFlags+if(like(lower(CommandLine), "%-noninteractive%"),1,0)
+| eval SuspiciousFlags=SuspiciousFlags+if(like(lower(CommandLine), "%-windowstyle hidden%"),1,0)
+| eval SuspiciousFlags=SuspiciousFlags+if(like(lower(CommandLine), "%-encodedcommand%"),1,0)
+| where SuspiciousFlags >= 2
+| table _time User ProcessImage ParentImage CommandLine SuspiciousFlags
+| sort - _time
