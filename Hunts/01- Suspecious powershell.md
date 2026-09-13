@@ -34,4 +34,19 @@ The investigation will:
 
 ## 📊 Initial Telemetry Exploration:
 The first stage of the hunt focuses on identifying existing PowerShell execution within Sysmon Process Creation events.
-Results and observations will be documented after analyzing the available telemetry.
+
+## Initial Baseline Findings:
+The initial PowerShell hunting query used a broad process-name match and returned a large number of events.
+
+Analysis showed that the query was also matching Splunk processes such as:
+- `splunk-powershell.exe`
+- Splunk Universal Forwarder PowerShell processes
+
+These events represented noise for the objective of this hunt rather than the Windows PowerShell executable being investigated.
+The query was therefore refined to specifically target process paths ending in: `powershell.exe`
+
+After refinement, the dataset was reduced to **14 Windows PowerShell process creation events** within the selected seven-day period.
+
+The remaining events included PowerShell executions under different user contexts and parent processes, demonstrating that PowerShell execution alone is not sufficient to classify activity as suspicious.
+
+Further analysis focuses on command-line characteristics and process relationships.
