@@ -1,2 +1,20 @@
-# Threat-Detection-and-Hunting-Lab
-Hands-on threat detection and hunting lab using Sysmon, Windows Security telemetry, Splunk, Sigma rules, MITRE ATT&amp;CK, behavioral detections, and incident correlation.
+*These are the overall structures of the Project section*
+
+**Threat-Detection-and-Hunting-Lab/**
+
+├── setup/
+│   ├── 01-lab-architecture.md
+│   ├── 02-telemetry-setup.md
+│   └── 03-sigma-setup.md
+│
+├── detections/
+│   ├── splunk/
+│   └── sigma/
+│
+├── hunts/
+│
+├── scenarios/
+│
+├── investigations/
+│
+└── screenshots/
