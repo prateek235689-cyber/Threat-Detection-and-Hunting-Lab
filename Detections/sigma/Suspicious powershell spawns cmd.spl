@@ -1,0 +1,31 @@
+Title: PowerShell Spawning Windows Command Shell
+id: 7c90a31b-3e3d-4d78-ae58-8d827ac4f541
+status: experimental
+description: Detects PowerShell spawning cmd.exe. This parent-child relationship may occur during legitimate administration but can also warrant investigation when observed in unexpected contexts.
+author: Prateek Gupta
+date: 2026-09-14
+
+logsource:
+  category: process_creation
+  product: windows
+
+detection:
+  selection_parent:
+    ParentImage|endswith: '\powershell.exe'
+
+  selection_child:
+    Image|endswith: '\cmd.exe'
+
+  condition: selection_parent and selection_child
+
+falsepositives:
+  - Legitimate PowerShell scripts
+  - Administrative automation
+  - Software installation or maintenance activity
+
+level: medium
+
+tags:
+  - attack.execution
+  - attack.t1059.001
+  - attack.t1059.003
