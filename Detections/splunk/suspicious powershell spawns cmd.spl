@@ -1,0 +1,18 @@
+index=main sourcetype="XmlWinEventLog:Microsoft-Windows-Sysmon/Operational" EventID=1
+| rex field=_raw "<Data Name='Image'>(?<ProcessImage>[^<]+)"
+| rex field=_raw "<Data Name='ParentImage'>(?<ParentImage>[^<]*)"
+| rex field=_raw "<Data Name='CommandLine'>(?<CommandLine>[^<]*)"
+| rex field=_raw "<Data Name='User'>(?<User>[^<]*)"
+| where like(lower(ParentImage), "%\\powershell.exe")
+| where like(lower(ProcessImage), "%\\cmd.exe")
+| table _time User ParentImage ProcessImage CommandLine
+| sort - _time
+
+# Detection: PowerShell spawning Windows Command Shell
+# Data Source: Sysmon Event ID 1
+# Purpose: Surface PowerShell -> cmd.exe parent-child relationships
+# for analyst investigation.
+
+# Note:
+# This relationship is not inherently malicious.
+# Legitimate administration and automation can produce the same behavior.
